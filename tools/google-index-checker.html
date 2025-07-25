@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Index Checker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">Google Index Checker</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Google Index Checker Functionality</h5>
+                <p class="card-text">Check if your website pages are indexed by Google.</p>
+                <div class="mb-3">
+                    <label for="urlInput" class="form-label">Enter URL to check</label>
+                    <input type="url" class="form-control" id="urlInput" placeholder="e.g., https://www.example.com" required>
+                </div>
+                <button id="checkIndexBtn" class="btn btn-primary">Check Google Index</button>
+                <div class="mt-4">
+                    <label for="resultOutput" class="form-label">Result</label>
+                    <textarea class="form-control" id="resultOutput" rows="3" readonly></textarea>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        // JavaScript for Google Index Checker tool
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlInput = document.getElementById('urlInput');
+            const checkIndexBtn = document.getElementById('checkIndexBtn');
+            const resultOutput = document.getElementById('resultOutput');
+
+            checkIndexBtn.addEventListener('click', checkGoogleIndex);
+
+            function checkGoogleIndex() {
+                const url = urlInput.value.trim();
+                if (!url) {
+                    resultOutput.value = 'Please enter a URL.';
+                    return;
+                }
+
+                // Google search query to check index status
+                const googleSearchUrl = `https://www.google.com/search?q=site:${encodeURIComponent(url)}`;
+
+                // This is a client-side tool, direct programmatic check is not possible due to CORS and Google's policies.
+                // We will simulate the check by opening a new tab with the Google search query.
+                // The user will need to manually verify the search results.
+                resultOutput.value = 'Opening Google search to check index status. Please verify manually.';
+                window.open(googleSearchUrl, '_blank');
+            }
+        });
+    </script>
+</body>
+</html>

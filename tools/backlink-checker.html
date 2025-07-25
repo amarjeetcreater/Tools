@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backlink Checker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">Backlink Checker</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Backlink Checker Functionality</h5>
+                <p class="card-text">Enter a URL to check its backlinks.</p>
+                <div class="mb-3">
+                    <label for="urlInput" class="form-label">URL:</label>
+                    <input type="url" class="form-control" id="urlInput" placeholder="https://example.com">
+                </div>
+                <button class="btn btn-primary" id="checkBacklinksBtn">Check Backlinks</button>
+                <div class="mt-3" id="resultsDisplay">
+                    <!-- Results will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        // JavaScript for Backlink Checker tool
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlInput = document.getElementById('urlInput');
+            const checkBacklinksBtn = document.getElementById('checkBacklinksBtn');
+            const resultsDisplay = document.getElementById('resultsDisplay');
+
+            checkBacklinksBtn.addEventListener('click', function() {
+                const url = urlInput.value.trim();
+                if (url) {
+                    resultsDisplay.innerHTML = `<p>Checking backlinks for: <strong>${url}</strong>...</p>`;
+                    // Simulate API call for backlink checking
+                    setTimeout(() => {
+                        const numBacklinks = Math.floor(Math.random() * 1000) + 50;
+                        const referringDomains = Math.floor(Math.random() * 100) + 10;
+                        resultsDisplay.innerHTML = `
+                            <p><strong>Results for ${url}:</strong></p>
+                            <p>Total Backlinks: ${numBacklinks}</p>
+                            <p>Referring Domains: ${referringDomains}</p>
+                            <p><em>(Note: This is a simulated result. Real backlink checking requires external APIs.)</em></p>
+                        `;
+                    }, 2000);
+                } else {
+                    resultsDisplay.innerHTML = '<p class="text-danger">Please enter a valid URL.</p>';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

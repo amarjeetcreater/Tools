@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flip a Coin Simulator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">Flip a Coin Simulator</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Flip the Coin!</h5>
+                <div class="text-center mb-4">
+                    <img id="coinImage" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/US_One_Cent_Obv.png/120px-US_One_Cent_Obv.png" alt="Coin" style="width: 150px; height: 150px; object-fit: contain;">
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-primary" id="flipCoinBtn">Flip Coin</button>
+                </div>
+                <div class="mt-4 text-center">
+                    <h6>Result:</h6>
+                    <p id="resultText" class="fs-4 fw-bold"></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        // JavaScript for Flip a Coin Simulator tool
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Flip a Coin Simulator loaded.');
+
+            const flipCoinBtn = document.getElementById('flipCoinBtn');
+            const coinImage = document.getElementById('coinImage');
+            const resultText = document.getElementById('resultText');
+
+            const headsImage = 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/US_One_Cent_Obv.png/120px-US_One_Cent_Obv.png'; // Example Heads image
+            const tailsImage = 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/US_One_Cent_Rev.png/120px-US_One_Cent_Rev.png'; // Example Tails image
+
+            flipCoinBtn.addEventListener('click', flipCoin);
+
+            function flipCoin() {
+                // Disable button during animation
+                flipCoinBtn.disabled = true;
+                resultText.textContent = '';
+
+                // Add a spinning animation class
+                coinImage.classList.add('spinning-coin');
+
+                setTimeout(() => {
+                    const result = Math.random() < 0.5 ? 'Heads' : 'Tails';
+                    resultText.textContent = result;
+                    coinImage.src = result === 'Heads' ? headsImage : tailsImage;
+
+                    // Remove spinning animation class after animation
+                    coinImage.classList.remove('spinning-coin');
+                    flipCoinBtn.disabled = false;
+                }, 1500); // Simulate flip duration
+            }
+
+            // Add some basic CSS for the spinning animation
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .spinning-coin {
+                    animation: spin 1.5s forwards;
+                }
+                @keyframes spin {
+                    0% { transform: rotateY(0deg); }
+                    100% { transform: rotateY(1080deg); } /* 3 full spins */
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>

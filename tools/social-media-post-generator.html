@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Post Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">Social Media Post Generator</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Social Media Post Generator</h5>
+                <div class="mb-3">
+                    <label for="postTopic" class="form-label">Post Topic/Keywords</label>
+                    <input type="text" class="form-control" id="postTopic" placeholder="e.g., new product launch, holiday sale">
+                </div>
+                <div class="mb-3">
+                    <label for="callToAction" class="form-label">Call to Action (Optional)</label>
+                    <input type="text" class="form-control" id="callToAction" placeholder="e.g., Shop now!, Learn more.">
+                </div>
+                <div class="mb-3">
+                    <label for="hashtags" class="form-label">Additional Hashtags (Optional)</label>
+                    <input type="text" class="form-control" id="hashtags" placeholder="e.g., #newproduct #sale">
+                </div>
+                <button id="generatePostBtn" class="btn btn-primary me-2">Generate Post</button>
+                <button id="clearBtn" class="btn btn-secondary">Clear</button>
+                
+                <div id="generatedPostContainer" class="mt-4 d-none">
+                    <h6>Generated Social Media Post:</h6>
+                    <textarea class="form-control" id="generatedPost" rows="6" readonly></textarea>
+                    <button id="copyPostBtn" class="btn btn-success mt-2">Copy Post</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        // JavaScript for Social Media Post Generator tool
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Social Media Post Generator loaded.');
+            // Implement tool-specific JavaScript here
+            const generatePostBtn = document.getElementById('generatePostBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const postTopicInput = document.getElementById('postTopic');
+            const callToActionInput = document.getElementById('callToAction');
+            const hashtagsInput = document.getElementById('hashtags');
+            const generatedPostContainer = document.getElementById('generatedPostContainer');
+            const generatedPostTextarea = document.getElementById('generatedPost');
+            const copyPostBtn = document.getElementById('copyPostBtn');
+
+            generatePostBtn.addEventListener('click', () => {
+                const topic = postTopicInput.value.trim();
+                const cta = callToActionInput.value.trim();
+                const additionalHashtags = hashtagsInput.value.trim();
+
+                if (!topic) {
+                    alert('Please enter a post topic or keywords.');
+                    return;
+                }
+
+                let post = `📢 New Post Alert! 📢\n\n`;
+                post += `✨ Discover more about ${topic}! ✨\n\n`;
+
+                if (cta) {
+                    post += `${cta}\n\n`;
+                }
+
+                let generatedHashtags = `#${topic.replace(/\s+/g, '')} #SocialMedia`;
+                if (additionalHashtags) {
+                    generatedHashtags += ` ${additionalHashtags}`;
+                }
+                post += generatedHashtags;
+
+                generatedPostTextarea.value = post;
+                generatedPostContainer.classList.remove('d-none');
+            });
+
+            clearBtn.addEventListener('click', () => {
+                postTopicInput.value = '';
+                callToActionInput.value = '';
+                hashtagsInput.value = '';
+                generatedPostTextarea.value = '';
+                generatedPostContainer.classList.add('d-none');
+            });
+
+            copyPostBtn.addEventListener('click', () => {
+                generatedPostTextarea.select();
+                generatedPostTextarea.setSelectionRange(0, 99999); // For mobile devices
+                navigator.clipboard.writeText(generatedPostTextarea.value).then(() => {
+                    alert('Social media post copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy post:', err);
+                    alert('Failed to copy post. Please try again.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

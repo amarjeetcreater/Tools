@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Tags Extractor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">YouTube Tags Extractor</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">YouTube Tags Extractor</h5>
+                <div class="mb-3">
+                    <label for="youtubeUrl" class="form-label">YouTube Video URL</label>
+                    <input type="text" class="form-control" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+                </div>
+                <button id="extractTagsBtn" class="btn btn-primary me-2">Extract Tags</button>
+                <button id="clearBtn" class="btn btn-secondary">Clear</button>
+                
+                <div id="tagsContainer" class="mt-4 d-none">
+                    <h6>Extracted Tags:</h6>
+                    <div id="extractedTags" class="alert alert-info" role="alert"></div>
+                    <button id="copyTagsBtn" class="btn btn-success mt-2">Copy Tags</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        // JavaScript for YouTube Tags Extractor tool
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('YouTube Tags Extractor loaded.');
+            // Implement tool-specific JavaScript here
+            const extractTagsBtn = document.getElementById('extractTagsBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const youtubeUrlInput = document.getElementById('youtubeUrl');
+            const tagsContainer = document.getElementById('tagsContainer');
+            const extractedTagsDiv = document.getElementById('extractedTags');
+            const copyTagsBtn = document.getElementById('copyTagsBtn');
+
+            extractTagsBtn.addEventListener('click', async () => {
+                const url = youtubeUrlInput.value.trim();
+                if (!url) {
+                    alert('Please enter a YouTube video URL.');
+                    return;
+                }
+
+                try {
+                    // Use a proxy to bypass CORS issues when fetching YouTube page
+                    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+                    const response = await fetch(proxyUrl);
+                    const html = await response.text();
+
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const metaTag = doc.querySelector('meta[name="keywords"]');
+
+                    if (metaTag && metaTag.content) {
+                        const tags = metaTag.content;
+                        extractedTagsDiv.textContent = tags;
+                        tagsContainer.classList.remove('d-none');
+                    } else {
+                        extractedTagsDiv.textContent = 'No tags found for this video.';
+                        tagsContainer.classList.remove('d-none');
+                    }
+                } catch (error) {
+                    console.error('Error extracting YouTube tags:', error);
+                    alert('An error occurred while extracting tags. Please check the URL and try again.');
+                }
+            });
+
+            clearBtn.addEventListener('click', () => {
+                youtubeUrlInput.value = '';
+                extractedTagsDiv.textContent = '';
+                tagsContainer.classList.add('d-none');
+            });
+
+            copyTagsBtn.addEventListener('click', () => {
+                const tagsToCopy = extractedTagsDiv.textContent;
+                if (tagsToCopy) {
+                    navigator.clipboard.writeText(tagsToCopy).then(() => {
+                        alert('Tags copied to clipboard!');
+                    }).catch(err => {
+                        console.error('Failed to copy tags:', err);
+                        alert('Failed to copy tags. Please try again.');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

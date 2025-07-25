@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary to Decimal Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">Binary to Decimal Converter</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Binary to Decimal Converter Functionality</h5>
+                <div class="mb-3">
+                    <label for="binaryInput" class="form-label">Binary Number:</label>
+                    <input type="text" class="form-control" id="binaryInput" placeholder="Enter binary number (e.g., 10110)">
+                </div>
+                <div class="d-grid gap-2 d-md-block mb-3">
+                    <button class="btn btn-primary me-2" id="convertBtn"><i class="fas fa-sync-alt"></i> Convert</button>
+                    <button class="btn btn-danger" id="clearBtn"><i class="fas fa-trash"></i> Clear</button>
+                </div>
+                <div class="mt-4">
+                    <h5>Decimal Result:</h5>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="decimalResult" readonly>
+                        <button class="btn btn-info" id="copyBtn"><i class="fas fa-copy"></i> Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const binaryInput = document.getElementById('binaryInput');
+            const convertBtn = document.getElementById('convertBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const decimalResultInput = document.getElementById('decimalResult');
+            const copyBtn = document.getElementById('copyBtn');
+
+            function convertBinaryToDecimal() {
+                const binaryString = binaryInput.value.trim();
+
+                if (binaryString === '') {
+                    decimalResultInput.value = 'Please enter a binary number.';
+                    return;
+                }
+
+                // Validate if the input contains only 0s and 1s
+                if (!/^[01]+$/.test(binaryString)) {
+                    decimalResultInput.value = 'Invalid binary number. Use only 0s and 1s.';
+                    return;
+                }
+
+                try {
+                    const decimalValue = parseInt(binaryString, 2);
+                    decimalResultInput.value = decimalValue;
+                } catch (error) {
+                    console.error('Error converting binary to decimal:', error);
+                    decimalResultInput.value = 'Error during conversion.';
+                }
+            }
+
+            convertBtn.addEventListener('click', convertBinaryToDecimal);
+
+            clearBtn.addEventListener('click', () => {
+                binaryInput.value = '';
+                decimalResultInput.value = '';
+            });
+
+            copyBtn.addEventListener('click', () => {
+                decimalResultInput.select();
+                decimalResultInput.setSelectionRange(0, 99999);
+                document.execCommand('copy');
+                alert('Copied to clipboard!');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Invitation Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">Wedding Invitation Generator</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Create Your Wedding Invitation</h5>
+                <div class="mb-3">
+                    <label for="groomName" class="form-label">Groom's Name:</label>
+                    <input type="text" class="form-control" id="groomName" placeholder="e.g., John">
+                </div>
+                <div class="mb-3">
+                    <label for="brideName" class="form-label">Bride's Name:</label>
+                    <input type="text" class="form-control" id="brideName" placeholder="e.g., Jane">
+                </div>
+                <div class="mb-3">
+                    <label for="weddingDate" class="form-label">Wedding Date:</label>
+                    <input type="date" class="form-control" id="weddingDate">
+                </div>
+                <div class="mb-3">
+                    <label for="weddingTime" class="form-label">Wedding Time:</label>
+                    <input type="time" class="form-control" id="weddingTime">
+                </div>
+                <div class="mb-3">
+                    <label for="weddingVenue" class="form-label">Wedding Venue:</label>
+                    <input type="text" class="form-control" id="weddingVenue" placeholder="e.g., Grand Ballroom">
+                </div>
+                <div class="mb-3">
+                    <label for="rsvpDate" class="form-label">RSVP Date:</label>
+                    <input type="date" class="form-control" id="rsvpDate">
+                </div>
+                <div class="mb-3">
+                    <label for="rsvpContact" class="form-label">RSVP Contact (Email/Phone):</label>
+                    <input type="text" class="form-control" id="rsvpContact" placeholder="e.g., rsvp@example.com">
+                </div>
+                <div class="d-grid gap-2 mb-4">
+                    <button type="button" class="btn btn-primary" id="generateInvitationBtn">Generate Invitation</button>
+                </div>
+                <hr>
+                <h6>Invitation Preview:</h6>
+                <div id="invitationPreview" class="mt-4 p-4 border rounded text-center" style="display:none; background-color: #f8f9fa;">
+                    <!-- Invitation content will be generated here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        // JavaScript for Wedding Invitation Generator tool
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Wedding Invitation Generator loaded.');
+
+            const groomNameInput = document.getElementById('groomName');
+            const brideNameInput = document.getElementById('brideName');
+            const weddingDateInput = document.getElementById('weddingDate');
+            const weddingTimeInput = document.getElementById('weddingTime');
+            const weddingVenueInput = document.getElementById('weddingVenue');
+            const rsvpDateInput = document.getElementById('rsvpDate');
+            const rsvpContactInput = document.getElementById('rsvpContact');
+            const generateInvitationBtn = document.getElementById('generateInvitationBtn');
+            const invitationPreviewDiv = document.getElementById('invitationPreview');
+
+            generateInvitationBtn.addEventListener('click', generateInvitation);
+
+            function generateInvitation() {
+                const groomName = groomNameInput.value.trim();
+                const brideName = brideNameInput.value.trim();
+                const weddingDate = weddingDateInput.value;
+                const weddingTime = weddingTimeInput.value;
+                const weddingVenue = weddingVenueInput.value.trim();
+                const rsvpDate = rsvpDateInput.value;
+                const rsvpContact = rsvpContactInput.value.trim();
+
+                if (!groomName || !brideName || !weddingDate || !weddingTime || !weddingVenue || !rsvpDate || !rsvpContact) {
+                    alert('Please fill in all invitation details.');
+                    return;
+                }
+
+                const invitationContent = `
+                    <h2 class="mb-3">You're Invited!</h2>
+                    <p class="fs-5">Join us as we, <span class="fw-bold">${groomName}</span> and <span class="fw-bold">${brideName}</span>,</p>
+                    <p class="fs-5">tie the knot on</p>
+                    <p class="fs-4 fw-bold">${new Date(weddingDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    <p class="fs-5">at <span class="fw-bold">${weddingTime}</span></p>
+                    <p class="fs-5">at <span class="fw-bold">${weddingVenue}</span></p>
+                    <p class="mt-4">Kindly RSVP by <span class="fw-bold">${new Date(rsvpDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span></p>
+                    <p>Contact: <span class="fw-bold">${rsvpContact}</span></p>
+                `;
+
+                invitationPreviewDiv.innerHTML = invitationContent;
+                invitationPreviewDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

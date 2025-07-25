@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Name Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">Business Name Generator</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Generate Business Names</h5>
+                <div class="mb-3">
+                    <label for="keywords" class="form-label">Enter Keywords (comma-separated)</label>
+                    <input type="text" class="form-control" id="keywords" placeholder="e.g., tech, innovation, solutions">
+                </div>
+                <div class="mb-3">
+                    <label for="numNames" class="form-label">Number of Names to Generate</label>
+                    <input type="number" class="form-control" id="numNames" value="5" min="1" max="20">
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-primary" id="generateNames">Generate Names</button>
+                    <button type="button" class="btn btn-secondary" id="clearNames">Clear</button>
+                </div>
+
+                <div class="mt-4">
+                    <h6>Generated Business Names:</h6>
+                    <ul id="nameList" class="list-group"></ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        // JavaScript for Business Name Generator tool
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Business Name Generator loaded.');
+
+            const keywordsInput = document.getElementById('keywords');
+            const numNamesInput = document.getElementById('numNames');
+            const generateNamesBtn = document.getElementById('generateNames');
+            const clearNamesBtn = document.getElementById('clearNames');
+            const nameList = document.getElementById('nameList');
+
+            const prefixes = ["Alpha", "Beta", "Cyber", "Data", "Eco", "Flex", "Global", "Hyper", "Innovate", "Juno", "Kilo", "Lumi", "Mega", "Nova", "Opti", "Penta", "Quantum", "Rapid", "Synergy", "Titan", "Ultra", "Velo", "Wiz", "Xenon", "Yotta", "Zenith"];
+            const suffixes = ["Solutions", "Tech", "Labs", "Works", "Hub", "Connect", "Sphere", "Gen", "Co", "Group", "Systems", "Dynamics", "Ventures", "Core", "Link", "Byte", "Flow", "Spark", "Nest", "Forge", "Craft", "Pulse", "Wave", "Edge", "Peak", "Zone"];
+
+            generateNamesBtn.addEventListener('click', generateBusinessNames);
+            clearNamesBtn.addEventListener('click', clearGeneratedNames);
+
+            function generateBusinessNames() {
+                nameList.innerHTML = ''; // Clear previous names
+                const keywords = keywordsInput.value.split(',').map(kw => kw.trim()).filter(kw => kw !== '');
+                const numNames = parseInt(numNamesInput.value);
+
+                if (numNames <= 0) {
+                    alert('Please enter a valid number of names to generate.');
+                    return;
+                }
+
+                for (let i = 0; i < numNames; i++) {
+                    let generatedName = '';
+                    if (keywords.length > 0) {
+                        const randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];
+                        generatedName = capitalizeFirstLetter(randomKeyword);
+                    }
+
+                    const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+                    const randomSuffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+
+                    // Combine based on different patterns
+                    const patterns = [
+                        `${randomPrefix}${generatedName}`,
+                        `${generatedName}${randomSuffix}`,
+                        `${randomPrefix} ${generatedName}`,
+                        `${generatedName} ${randomSuffix}`,
+                        `${randomPrefix}${randomSuffix}`,
+                        `${randomPrefix} ${randomSuffix}`,
+                        `${generatedPrefix}${randomKeyword ? ' ' + capitalizeFirstLetter(randomKeyword) : ''}${randomSuffix}`
+                    ];
+
+                    const finalName = patterns[Math.floor(Math.random() * patterns.length)];
+                    addNameToLlist(finalName);
+                }
+            }
+
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            function addNameToLlist(name) {
+                const listItem = document.createElement('li');
+                listItem.classList.add('list-group-item');
+                listItem.textContent = name;
+                nameList.appendChild(listItem);
+            }
+
+            function clearGeneratedNames() {
+                nameList.innerHTML = '';
+                keywordsInput.value = '';
+                numNamesInput.value = '5';
+            }
+        });
+    </script>
+</body>
+</html>

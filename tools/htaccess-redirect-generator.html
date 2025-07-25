@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTACCESS Redirect Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">HTACCESS Redirect Generator</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Generate .htaccess Redirects</h5>
+                <div class="mb-3">
+                    <label for="oldUrl" class="form-label">Old URL (e.g., /old-page.html or http://olddomain.com/old-page.html)</label>
+                    <input type="text" class="form-control" id="oldUrl" placeholder="Enter old URL">
+                </div>
+                <div class="mb-3">
+                    <label for="newUrl" class="form-label">New URL (e.g., /new-page.html or http://newdomain.com/new-page.html)</label>
+                    <input type="text" class="form-control" id="newUrl" placeholder="Enter new URL">
+                </div>
+                <div class="mb-3">
+                    <label for="redirectType" class="form-label">Redirect Type</label>
+                    <select class="form-select" id="redirectType">
+                        <option value="301">301 Permanent Redirect</option>
+                        <option value="302">302 Temporary Redirect</option>
+                    </select>
+                </div>
+                <div class="d-flex justify-content-center mb-3">
+                    <button class="btn btn-primary mx-1" id="generateRedirectBtn"><i class="fas fa-cogs"></i> Generate Redirect</button>
+                    <button class="btn btn-secondary mx-1" id="copyRedirectBtn"><i class="fas fa-copy"></i> Copy Redirect</button>
+                    <button class="btn btn-danger mx-1" id="clearAllBtn"><i class="fas fa-trash"></i> Clear All</button>
+                </div>
+                <div class="mb-3">
+                    <label for="htaccessOutput" class="form-label">Generated .htaccess Code</label>
+                    <textarea class="form-control" id="htaccessOutput" rows="10" readonly placeholder="Generated .htaccess code will appear here..."></textarea>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const oldUrlInput = document.getElementById('oldUrl');
+            const newUrlInput = document.getElementById('newUrl');
+            const redirectTypeSelect = document.getElementById('redirectType');
+            const generateRedirectBtn = document.getElementById('generateRedirectBtn');
+            const copyRedirectBtn = document.getElementById('copyRedirectBtn');
+            const clearAllBtn = document.getElementById('clearAllBtn');
+            const htaccessOutput = document.getElementById('htaccessOutput');
+
+            generateRedirectBtn.addEventListener('click', generateRedirect);
+            copyRedirectBtn.addEventListener('click', copyRedirect);
+            clearAllBtn.addEventListener('click', clearAll);
+
+            function generateRedirect() {
+                const oldUrl = oldUrlInput.value.trim();
+                const newUrl = newUrlInput.value.trim();
+                const redirectType = redirectTypeSelect.value;
+
+                if (!oldUrl || !newUrl) {
+                    htaccessOutput.value = 'Please enter both Old URL and New URL.';
+                    return;
+                }
+
+                let redirectCode = '';
+                if (oldUrl.startsWith('http://') || oldUrl.startsWith('https://')) {
+                    // Full URL redirect
+                    redirectCode = `Redirect ${redirectType} ${oldUrl} ${newUrl}`;
+                } else {
+                    // Path-based redirect
+                    redirectCode = `Redirect ${redirectType} ${oldUrl} ${newUrl}`;
+                }
+                
+                htaccessOutput.value = redirectCode;
+            }
+
+            function copyRedirect() {
+                htaccessOutput.select();
+                htaccessOutput.setSelectionRange(0, 99999);
+                document.execCommand('copy');
+                alert('Generated .htaccess code copied to clipboard!');
+            }
+
+            function clearAll() {
+                oldUrlInput.value = '';
+                newUrlInput.value = '';
+                redirectTypeSelect.value = '301';
+                htaccessOutput.value = '';
+            }
+        });
+    </script>
+</body>
+</html>

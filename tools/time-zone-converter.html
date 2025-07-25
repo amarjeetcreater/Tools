@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Zone Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">Time Zone Converter</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Time Zone Converter Functionality</h5>
+                <div class="mb-3">
+                    <label for="dateTimeInput" class="form-label">Date and Time:</label>
+                    <input type="datetime-local" class="form-control" id="dateTimeInput">
+                </div>
+                <div class="mb-3">
+                    <label for="fromTimeZone" class="form-label">From Time Zone:</label>
+                    <select class="form-select" id="fromTimeZone"></select>
+                </div>
+                <div class="mb-3">
+                    <label for="toTimeZone" class="form-label">To Time Zone:</label>
+                    <select class="form-select" id="toTimeZone"></select>
+                </div>
+                <div class="d-grid gap-2 d-md-block mb-3">
+                    <button class="btn btn-primary me-2" id="convertBtn"><i class="fas fa-sync-alt"></i> Convert</button>
+                    <button class="btn btn-danger" id="clearBtn"><i class="fas fa-trash"></i> Clear</button>
+                </div>
+                <div class="mt-4">
+                    <h5>Converted Time:</h5>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="convertedTime" readonly>
+                        <button class="btn btn-info" id="copyBtn"><i class="fas fa-copy"></i> Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateTimeInput = document.getElementById('dateTimeInput');
+            const fromTimeZoneSelect = document.getElementById('fromTimeZone');
+            const toTimeZoneSelect = document.getElementById('toTimeZone');
+            const convertBtn = document.getElementById('convertBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const convertedTimeInput = document.getElementById('convertedTime');
+            const copyBtn = document.getElementById('copyBtn');
+
+            // Populate time zones
+            function populateTimeZones() {
+                const timeZones = Intl.supportedValuesOf('timeZone');
+                timeZones.forEach(zone => {
+                    const option1 = document.createElement('option');
+                    option1.value = zone;
+                    option1.textContent = zone;
+                    fromTimeZoneSelect.appendChild(option1);
+
+                    const option2 = document.createElement('option');
+                    option2.value = zone;
+                    option2.textContent = zone;
+                    toTimeZoneSelect.appendChild(option2);
+                });
+
+                // Set default time zones (e.g., user's current and a common one)
+                fromTimeZoneSelect.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                toTimeZoneSelect.value = 'America/New_York'; // Example default
+            }
+
+            function convertTime() {
+                const dateTimeString = dateTimeInput.value;
+                const fromTimeZone = fromTimeZoneSelect.value;
+                const toTimeZone = toTimeZoneSelect.value;
+
+                if (!dateTimeString) {
+                    convertedTimeInput.value = 'Please enter a date and time.';
+                    return;
+                }
+
+                try {
+                    const date = new Date(dateTimeString);
+
+                    // Convert to UTC first from the 'from' time zone
+                    const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
+
+                    // Then convert UTC to the 'to' time zone
+                    const convertedDate = new Date(date.toLocaleString('en-US', { timeZone: toTimeZone }));
+
+                    convertedTimeInput.value = convertedDate.toLocaleString('en-US', {
+                        year: 'numeric', month: 'numeric', day: 'numeric',
+                        hour: 'numeric', minute: 'numeric', second: 'numeric',
+                        timeZoneName: 'short', timeZone: toTimeZone
+                    });
+
+                } catch (error) {
+                    console.error('Error converting time:', error);
+                    convertedTimeInput.value = 'Invalid date/time or conversion error.';
+                }
+            }
+
+            convertBtn.addEventListener('click', convertTime);
+
+            clearBtn.addEventListener('click', () => {
+                dateTimeInput.value = '';
+                populateTimeZones(); // Reset time zones to defaults
+                convertedTimeInput.value = '';
+            });
+
+            copyBtn.addEventListener('click', () => {
+                convertedTimeInput.select();
+                convertedTimeInput.setSelectionRange(0, 99999);
+                document.execCommand('copy');
+                alert('Copied to clipboard!');
+            });
+
+            populateTimeZones();
+        });
+    </script>
+</body>
+</html>

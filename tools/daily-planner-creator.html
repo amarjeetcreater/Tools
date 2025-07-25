@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Planner Creator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">Daily Planner Creator</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Create Your Daily Planner</h5>
+                <div class="mb-3">
+                    <label for="plannerDate" class="form-label">Select Date:</label>
+                    <input type="date" class="form-control" id="plannerDate">
+                </div>
+                <div class="mb-3">
+                    <label for="taskTime" class="form-label">Task Time:</label>
+                    <input type="time" class="form-control" id="taskTime">
+                </div>
+                <div class="mb-3">
+                    <label for="taskDescription" class="form-label">Task Description:</label>
+                    <input type="text" class="form-control" id="taskDescription" placeholder="e.g., Meeting with John">
+                </div>
+                <div class="d-grid gap-2 mb-4">
+                    <button type="button" class="btn btn-success" id="addTaskBtn">Add Task</button>
+                </div>
+                <hr>
+                <h6>Your Tasks:</h6>
+                <ul id="taskList" class="list-group mb-4"></ul>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-primary" id="generatePlannerBtn">Generate Planner</button>
+                </div>
+                <div id="plannerOutput" class="mt-4 p-3 border rounded" style="display:none;">
+                    <!-- Planner content will be generated here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        // JavaScript for Daily Planner Creator tool
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Daily Planner Creator loaded.');
+
+            const plannerDateInput = document.getElementById('plannerDate');
+            const taskTimeInput = document.getElementById('taskTime');
+            const taskDescriptionInput = document.getElementById('taskDescription');
+            const addTaskBtn = document.getElementById('addTaskBtn');
+            const taskList = document.getElementById('taskList');
+            const generatePlannerBtn = document.getElementById('generatePlannerBtn');
+            const plannerOutputDiv = document.getElementById('plannerOutput');
+
+            let tasks = [];
+
+            // Set today's date as default
+            const today = new Date();
+            plannerDateInput.value = today.toISOString().split('T')[0];
+
+            addTaskBtn.addEventListener('click', addTask);
+            generatePlannerBtn.addEventListener('click', generatePlanner);
+
+            function addTask() {
+                const date = plannerDateInput.value;
+                const time = taskTimeInput.value;
+                const description = taskDescriptionInput.value.trim();
+
+                if (!date || !time || !description) {
+                    alert('Please fill in all task details.');
+                    return;
+                }
+
+                tasks.push({ date, time, description });
+                tasks.sort((a, b) => {
+                    if (a.date === b.date) {
+                        return a.time.localeCompare(b.time);
+                    }
+                    return a.date.localeCompare(b.date);
+                });
+                renderTasks();
+                taskTimeInput.value = '';
+                taskDescriptionInput.value = '';
+            }
+
+            function renderTasks() {
+                taskList.innerHTML = '';
+                tasks.forEach((task, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+                    listItem.innerHTML = `
+                        <span><strong>${task.date} ${task.time}</strong>: ${task.description}</span>
+                        <button class="btn btn-danger btn-sm" data-index="${index}">Remove</button>
+                    `;
+                    taskList.appendChild(listItem);
+                });
+
+                taskList.querySelectorAll('.btn-danger').forEach(button => {
+                    button.addEventListener('click', removeTask);
+                });
+            }
+
+            function removeTask(event) {
+                const index = event.target.dataset.index;
+                tasks.splice(index, 1);
+                renderTasks();
+            }
+
+            function generatePlanner() {
+                if (tasks.length === 0) {
+                    plannerOutputDiv.style.display = 'none';
+                    alert('Please add some tasks to generate a planner.');
+                    return;
+                }
+
+                let plannerContent = `<h3>Daily Planner for ${plannerDateInput.value}</h3><ul class="list-group">`;
+                const tasksForSelectedDate = tasks.filter(task => task.date === plannerDateInput.value);
+
+                if (tasksForSelectedDate.length === 0) {
+                    plannerContent += `<li class="list-group-item">No tasks for this date.</li>`;
+                } else {
+                    tasksForSelectedDate.forEach(task => {
+                        plannerContent += `<li class="list-group-item"><strong>${task.time}</strong>: ${task.description}</li>`;
+                    });
+                }
+                plannerContent += `</ul><button class="btn btn-secondary mt-3" onclick="window.print()">Print Planner</button>`;
+                plannerOutputDiv.innerHTML = plannerContent;
+                plannerOutputDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

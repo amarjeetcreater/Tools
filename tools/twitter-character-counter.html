@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitter Character Counter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">Twitter Character Counter</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Count Characters for Twitter</h5>
+                <div class="mb-3">
+                    <label for="tweetInput" class="form-label">Enter your tweet:</label>
+                    <textarea class="form-control" id="tweetInput" rows="5" maxlength="280" placeholder="Start typing..."></textarea>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span id="charCount" class="fw-bold">0 / 280</span>
+                    <button class="btn btn-danger" id="clearBtn">Clear</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        // JavaScript for Twitter Character Counter tool
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Twitter Character Counter loaded.');
+
+            const tweetInput = document.getElementById('tweetInput');
+            const charCount = document.getElementById('charCount');
+            const clearBtn = document.getElementById('clearBtn');
+            const twitterLimit = 280; // Twitter's character limit
+
+            function updateCharCount() {
+                const currentLength = tweetInput.value.length;
+                charCount.textContent = `${currentLength} / ${twitterLimit}`;
+
+                if (currentLength > twitterLimit) {
+                    charCount.classList.add('text-danger');
+                } else {
+                    charCount.classList.remove('text-danger');
+                }
+            }
+
+            tweetInput.addEventListener('input', updateCharCount);
+
+            clearBtn.addEventListener('click', function() {
+                tweetInput.value = '';
+                updateCharCount();
+            });
+
+            // Initial count on page load
+            updateCharCount();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">Invoice Generator</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Generate Your Invoice</h5>
+                <form id="invoiceForm">
+                    <!-- Invoice Details -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="invoiceNumber" class="form-label">Invoice Number</label>
+                            <input type="text" class="form-control" id="invoiceNumber" value="INV-001">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="invoiceDate" class="form-label">Invoice Date</label>
+                            <input type="date" class="form-control" id="invoiceDate" required>
+                        </div>
+                    </div>
+
+                    <!-- Your Company Details -->
+                    <h6 class="mt-4">Your Company Details</h6>
+                    <div class="mb-3">
+                        <input type="text" class="form-control mb-2" id="yourCompanyName" placeholder="Your Company Name" required>
+                        <input type="text" class="form-control mb-2" id="yourCompanyAddress" placeholder="Your Company Address">
+                        <input type="email" class="form-control" id="yourCompanyEmail" placeholder="Your Company Email">
+                    </div>
+
+                    <!-- Client Details -->
+                    <h6 class="mt-4">Client Details</h6>
+                    <div class="mb-3">
+                        <input type="text" class="form-control mb-2" id="clientName" placeholder="Client Name" required>
+                        <input type="text" class="form-control mb-2" id="clientAddress" placeholder="Client Address">
+                        <input type="email" class="form-control" id="clientEmail" placeholder="Client Email">
+                    </div>
+
+                    <!-- Itemized List -->
+                    <h6 class="mt-4">Items</h6>
+                    <div id="itemRows">
+                        <div class="row mb-2 item-row">
+                            <div class="col-md-5">
+                                <input type="text" class="form-control item-description" placeholder="Description" required>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="number" class="form-control item-quantity" placeholder="Qty" value="1" min="1" required>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="number" class="form-control item-price" placeholder="Price" step="0.01" min="0" required>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" class="form-control item-total" placeholder="Total" readonly>
+                            </div>
+                            <div class="col-md-1 d-flex align-items-center">
+                                <button type="button" class="btn btn-danger btn-sm remove-item">X</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-info btn-sm mt-2" id="addItem">Add Item</button>
+
+                    <!-- Totals -->
+                    <div class="row mt-4">
+                        <div class="col-md-6 offset-md-6">
+                            <div class="d-flex justify-content-between">
+                                <span>Subtotal:</span>
+                                <span id="subTotal">0.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Tax (%):</span>
+                                <input type="number" class="form-control w-25 text-end" id="taxRate" value="0" min="0" step="0.01">
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Total:</span>
+                                <span id="grandTotal">0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary" id="generateInvoice">Generate Invoice</button>
+                        <button type="button" class="btn btn-secondary" id="clearInvoice">Clear Form</button>
+                    </div>
+                </form>
+
+                <div id="invoiceOutput" class="mt-4" style="display: none;">
+                    <h5>Invoice Preview</h5>
+                    <div id="invoiceContent" class="border p-4 mb-3"></div>
+                    <button class="btn btn-success" id="downloadInvoice">Download Invoice (PDF)</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        // JavaScript for Invoice Generator tool
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Invoice Generator loaded.');
+
+            const invoiceForm = document.getElementById('invoiceForm');
+            const invoiceDateInput = document.getElementById('invoiceDate');
+            const itemRows = document.getElementById('itemRows');
+            const addItemBtn = document.getElementById('addItem');
+            const taxRateInput = document.getElementById('taxRate');
+            const subTotalSpan = document.getElementById('subTotal');
+            const grandTotalSpan = document.getElementById('grandTotal');
+            const generateInvoiceBtn = document.getElementById('generateInvoice');
+            const clearInvoiceBtn = document.getElementById('clearInvoice');
+            const invoiceOutputDiv = document.getElementById('invoiceOutput');
+            const invoiceContentDiv = document.getElementById('invoiceContent');
+            const downloadInvoiceBtn = document.getElementById('downloadInvoice');
+
+            // Set current date as default for invoice date
+            invoiceDateInput.valueAsDate = new Date();
+
+            // Event Listeners
+            addItemBtn.addEventListener('click', addItemRow);
+            itemRows.addEventListener('input', updateTotals);
+            itemRows.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-item')) {
+                    e.target.closest('.item-row').remove();
+                    updateTotals();
+                }
+            });
+            taxRateInput.addEventListener('input', updateTotals);
+            generateInvoiceBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                generateInvoice();
+            });
+            clearInvoiceBtn.addEventListener('click', clearForm);
+            downloadInvoiceBtn.addEventListener('click', downloadInvoice);
+
+            function addItemRow() {
+                const newRow = document.createElement('div');
+                newRow.classList.add('row', 'mb-2', 'item-row');
+                newRow.innerHTML = `
+                    <div class="col-md-5">
+                        <input type="text" class="form-control item-description" placeholder="Description" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control item-quantity" placeholder="Qty" value="1" min="1" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control item-price" placeholder="Price" step="0.01" min="0" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control item-total" placeholder="Total" readonly>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-center">
+                        <button type="button" class="btn btn-danger btn-sm remove-item">X</button>
+                    </div>
+                `;
+                itemRows.appendChild(newRow);
+                updateTotals();
+            }
+
+            function updateTotals() {
+                let subtotal = 0;
+                document.querySelectorAll('.item-row').forEach(row => {
+                    const quantity = parseFloat(row.querySelector('.item-quantity').value) || 0;
+                    const price = parseFloat(row.querySelector('.item-price').value) || 0;
+                    const itemTotal = quantity * price;
+                    row.querySelector('.item-total').value = itemTotal.toFixed(2);
+                    subtotal += itemTotal;
+                });
+
+                const taxRate = parseFloat(taxRateInput.value) || 0;
+                const taxAmount = subtotal * (taxRate / 100);
+                const grandTotal = subtotal + taxAmount;
+
+                subTotalSpan.textContent = subtotal.toFixed(2);
+                grandTotalSpan.textContent = grandTotal.toFixed(2);
+            }
+
+            function generateInvoice() {
+                const invoiceNumber = document.getElementById('invoiceNumber').value;
+                const invoiceDate = document.getElementById('invoiceDate').value;
+                const yourCompanyName = document.getElementById('yourCompanyName').value;
+                const yourCompanyAddress = document.getElementById('yourCompanyAddress').value;
+                const yourCompanyEmail = document.getElementById('yourCompanyEmail').value;
+                const clientName = document.getElementById('clientName').value;
+                const clientAddress = document.getElementById('clientAddress').value;
+                const clientEmail = document.getElementById('clientEmail').value;
+
+                let invoiceHtml = `
+                    <div class="text-end">
+                        <h4>INVOICE</h4>
+                        <p><strong>Invoice #:</strong> ${invoiceNumber}</p>
+                        <p><strong>Date:</strong> ${invoiceDate}</p>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h6>From:</h6>
+                            <p><strong>${yourCompanyName}</strong></p>
+                            <p>${yourCompanyAddress}</p>
+                            <p>${yourCompanyEmail}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>To:</h6>
+                            <p><strong>${clientName}</strong></p>
+                            <p>${clientAddress}</p>
+                            <p>${clientEmail}</p>
+                        </div>
+                    </div>
+                    <table class="table table-bordered mt-4">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Qty</th>
+                                <th>Unit Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                document.querySelectorAll('.item-row').forEach(row => {
+                    const description = row.querySelector('.item-description').value;
+                    const quantity = row.querySelector('.item-quantity').value;
+                    const price = parseFloat(row.querySelector('.item-price').value).toFixed(2);
+                    const total = parseFloat(row.querySelector('.item-total').value).toFixed(2);
+                    invoiceHtml += `
+                        <tr>
+                            <td>${description}</td>
+                            <td>${quantity}</td>
+                            <td>${price}</td>
+                            <td>${total}</td>
+                        </tr>
+                    `;
+                });
+
+                invoiceHtml += `
+                        </tbody>
+                    </table>
+                    <div class="text-end">
+                        <p><strong>Subtotal:</strong> $${subTotalSpan.textContent}</p>
+                        <p><strong>Tax (${taxRateInput.value}%):</strong> $${(parseFloat(grandTotalSpan.textContent) - parseFloat(subTotalSpan.textContent)).toFixed(2)}</p>
+                        <h4><strong>Grand Total:</strong> $${grandTotalSpan.textContent}</h4>
+                    </div>
+                `;
+
+                invoiceContentDiv.innerHTML = invoiceHtml;
+                invoiceOutputDiv.style.display = 'block';
+            }
+
+            function clearForm() {
+                invoiceForm.reset();
+                invoiceDateInput.valueAsDate = new Date(); // Reset date
+                itemRows.innerHTML = ''; // Clear items
+                addItemRow(); // Add one empty item row
+                taxRateInput.value = '0';
+                updateTotals();
+                invoiceOutputDiv.style.display = 'none';
+                invoiceContentDiv.innerHTML = '';
+            }
+
+            function downloadInvoice() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                doc.html(invoiceContentDiv, {
+                    callback: function (doc) {
+                        doc.save('invoice.pdf');
+                    },
+                    x: 10,
+                    y: 10,
+                    html2canvas: { scale: 0.7 }
+                });
+            }
+
+            // Initial call to set date and one item row
+            addItemRow();
+            updateTotals();
+        });
+    </script>
+</body>
+</html>

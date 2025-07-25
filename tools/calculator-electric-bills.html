@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator for Electric Bills</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">Calculator for Electric Bills</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Calculator for Electric Bills Functionality</h5>
+                <p class="card-text">Calculate your estimated electric bill based on consumption and unit cost.</p>
+                <div class="mb-3">
+                    <label for="kwhInput" class="form-label">Electricity Consumption (kWh):</label>
+                    <input type="number" class="form-control" id="kwhInput" placeholder="e.g., 300" min="0">
+                </div>
+                <div class="mb-3">
+                    <label for="costPerKwhInput" class="form-label">Cost per kWh ($):</label>
+                    <input type="number" class="form-control" id="costPerKwhInput" placeholder="e.g., 0.12" step="0.01" min="0">
+                </div>
+                <button class="btn btn-primary" id="calculateBillBtn">Calculate Bill</button>
+                <div class="mt-4">
+                    <h6>Estimated Bill:</h6>
+                    <p id="estimatedBill" class="fs-4 text-success"></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        // JavaScript for Calculator for Electric Bills tool
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Calculator for Electric Bills loaded.');
+
+            const kwhInput = document.getElementById('kwhInput');
+            const costPerKwhInput = document.getElementById('costPerKwhInput');
+            const calculateBillBtn = document.getElementById('calculateBillBtn');
+            const estimatedBill = document.getElementById('estimatedBill');
+
+            calculateBillBtn.addEventListener('click', function() {
+                const kwh = parseFloat(kwhInput.value);
+                const costPerKwh = parseFloat(costPerKwhInput.value);
+
+                if (isNaN(kwh) || isNaN(costPerKwh) || kwh < 0 || costPerKwh < 0) {
+                    estimatedBill.textContent = 'Please enter valid positive numbers.';
+                    estimatedBill.classList.remove('text-success');
+                    estimatedBill.classList.add('text-danger');
+                } else {
+                    const totalBill = kwh * costPerKwh;
+                    estimatedBill.textContent = `$${totalBill.toFixed(2)}`;
+                    estimatedBill.classList.remove('text-danger');
+                    estimatedBill.classList.add('text-success');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

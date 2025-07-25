@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Authority Checker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">Domain Authority Checker</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Domain Authority Checker Functionality</h5>
+                <p class="card-text">Check the Domain Authority (DA) and Page Authority (PA) of any website.</p>
+                <div class="mb-3">
+                    <label for="domainInput" class="form-label">Enter Domain Name</label>
+                    <input type="text" class="form-control" id="domainInput" placeholder="e.g., example.com" required>
+                </div>
+                <button id="checkDomainBtn" class="btn btn-primary">Check Domain Authority</button>
+                <div class="mt-4">
+                    <label for="resultOutput" class="form-label">Result</label>
+                    <textarea class="form-control" id="resultOutput" rows="5" readonly></textarea>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        // JavaScript for Domain Authority Checker tool
+        document.addEventListener('DOMContentLoaded', function() {
+            const domainInput = document.getElementById('domainInput');
+            const checkDomainBtn = document.getElementById('checkDomainBtn');
+            const resultOutput = document.getElementById('resultOutput');
+
+            checkDomainBtn.addEventListener('click', checkDomainAuthority);
+
+            function checkDomainAuthority() {
+                const domain = domainInput.value.trim();
+                if (!domain) {
+                    resultOutput.value = 'Please enter a domain name.';
+                    return;
+                }
+
+                // In a real-world scenario, this would involve an API call to a service like Moz or Ahrefs.
+                // For this client-side tool, we'll simulate a result.
+                resultOutput.value = `Checking Domain Authority for: ${domain}\n\n`;
+                resultOutput.value += 'Note: A real DA/PA check requires an external API, which is not implemented in this client-side tool.\n';
+                resultOutput.value += 'Simulated Result:\n';
+                resultOutput.value += `Domain Authority (DA): ${Math.floor(Math.random() * 100) + 1}/100\n`;
+                resultOutput.value += `Page Authority (PA): ${Math.floor(Math.random() * 100) + 1}/100\n`;
+                resultOutput.value += `Spam Score: ${Math.floor(Math.random() * 10) + 1}/10`;
+            }
+        });
+    </script>
+</body>
+</html>

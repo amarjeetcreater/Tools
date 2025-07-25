@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lottery Number Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">Lottery Number Generator</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Generate Lottery Numbers</h5>
+                <div class="mb-3">
+                    <label for="numBalls" class="form-label">Number of Balls to Generate</label>
+                    <input type="number" class="form-control" id="numBalls" value="6" min="1" max="15">
+                </div>
+                <div class="mb-3">
+                    <label for="maxNumber" class="form-label">Maximum Number (e.g., 49 for Lotto, 69 for Powerball)</label>
+                    <input type="number" class="form-control" id="maxNumber" value="49" min="1">
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-primary" id="generateNumbers">Generate Numbers</button>
+                    <button type="button" class="btn btn-secondary" id="clearNumbers">Clear</button>
+                </div>
+
+                <div class="mt-4">
+                    <h6>Generated Lottery Numbers:</h6>
+                    <div id="lotteryNumbers" class="d-flex flex-wrap justify-content-center"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        // JavaScript for Lottery Number Generator tool
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Lottery Number Generator loaded.');
+
+            const numBallsInput = document.getElementById('numBalls');
+            const maxNumberInput = document.getElementById('maxNumber');
+            const generateNumbersBtn = document.getElementById('generateNumbers');
+            const clearNumbersBtn = document.getElementById('clearNumbers');
+            const lotteryNumbersDiv = document.getElementById('lotteryNumbers');
+
+            generateNumbersBtn.addEventListener('click', generateLotteryNumbers);
+            clearNumbersBtn.addEventListener('click', clearLotteryNumbers);
+
+            function generateLotteryNumbers() {
+                lotteryNumbersDiv.innerHTML = ''; // Clear previous numbers
+                const numBalls = parseInt(numBallsInput.value);
+                const maxNumber = parseInt(maxNumberInput.value);
+
+                if (isNaN(numBalls) || numBalls <= 0 || isNaN(maxNumber) || maxNumber <= 0) {
+                    alert('Please enter valid numbers for balls and maximum number.');
+                    return;
+                }
+
+                if (numBalls > maxNumber) {
+                    alert('Number of balls cannot be greater than the maximum number.');
+                    return;
+                }
+
+                const generated = new Set();
+                while (generated.size < numBalls) {
+                    const randomNumber = Math.floor(Math.random() * maxNumber) + 1;
+                    generated.add(randomNumber);
+                }
+
+                const sortedNumbers = Array.from(generated).sort((a, b) => a - b);
+                sortedNumbers.forEach(number => {
+                    const numSpan = document.createElement('span');
+                    numSpan.classList.add('badge', 'bg-primary', 'fs-5', 'm-2', 'p-3');
+                    numSpan.textContent = number;
+                    lotteryNumbersDiv.appendChild(numSpan);
+                });
+            }
+
+            function clearLotteryNumbers() {
+                lotteryNumbersDiv.innerHTML = '';
+                numBallsInput.value = '6';
+                maxNumberInput.value = '49';
+            }
+        });
+    </script>
+</body>
+</html>

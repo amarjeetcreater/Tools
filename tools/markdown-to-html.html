@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown to HTML Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">Markdown to HTML Converter</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="markdownInput" class="form-label">Markdown Input</label>
+                            <textarea class="form-control" id="markdownInput" rows="15" placeholder="Enter Markdown here..."></textarea>
+                        </div>
+                        <button class="btn btn-primary" id="convertToHtml"> <i class="fas fa-sync-alt"></i> Convert to HTML</button>
+                        <button class="btn btn-secondary" id="clearAll"> <i class="fas fa-eraser"></i> Clear All</button>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="htmlOutput" class="form-label">HTML Output</label>
+                            <textarea class="form-control" id="htmlOutput" rows="15" placeholder="Generated HTML will appear here..." readonly></textarea>
+                        </div>
+                        <button class="btn btn-success" id="copyHtml"> <i class="fas fa-copy"></i> Copy HTML</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const markdownInput = document.getElementById('markdownInput');
+            const htmlOutput = document.getElementById('htmlOutput');
+            const convertToHtmlBtn = document.getElementById('convertToHtml');
+            const copyHtmlBtn = document.getElementById('copyHtml');
+            const clearAllBtn = document.getElementById('clearAll');
+
+            const converter = new showdown.Converter();
+
+            convertToHtmlBtn.addEventListener('click', function() {
+                const markdownText = markdownInput.value;
+                const html = converter.makeHtml(markdownText);
+                htmlOutput.value = html;
+            });
+
+            copyHtmlBtn.addEventListener('click', function() {
+                htmlOutput.select();
+                htmlOutput.setSelectionRange(0, 99999);
+                document.execCommand('copy');
+                alert('HTML copied to clipboard!');
+            });
+
+            clearAllBtn.addEventListener('click', function() {
+                markdownInput.value = '';
+                htmlOutput.value = '';
+            });
+        });
+    </script>
+</body>
+</html>

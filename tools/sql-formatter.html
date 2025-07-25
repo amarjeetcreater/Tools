@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Formatter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="container my-4">
+        <h1 class="text-center mb-4">SQL Formatter</h1>
+        <div class="ad-section">
+            <!-- Ad Space -->
+            <p>Advertisement</p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Enter your SQL code below:</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <textarea class="form-control" id="sqlInput" rows="15" placeholder="Enter SQL code here..."></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <textarea class="form-control" id="sqlOutput" rows="15" placeholder="Formatted SQL will appear here..." readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center mb-3">
+                    <button class="btn btn-primary mx-1" id="formatSqlBtn"><i class="fas fa-code"></i> Format SQL</button>
+                    <button class="btn btn-secondary mx-1" id="copyFormattedBtn"><i class="fas fa-copy"></i> Copy Formatted</button>
+                    <button class="btn btn-danger mx-1" id="clearAllBtn"><i class="fas fa-trash"></i> Clear All</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sql-formatter@15.6.6/dist/sql-formatter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script src="../js/loadComponents.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sqlInput = document.getElementById('sqlInput');
+            const sqlOutput = document.getElementById('sqlOutput');
+            const formatSqlBtn = document.getElementById('formatSqlBtn');
+            const copyFormattedBtn = document.getElementById('copyFormattedBtn');
+            const clearAllBtn = document.getElementById('clearAllBtn');
+
+            formatSqlBtn.addEventListener('click', formatSql);
+            copyFormattedBtn.addEventListener('click', copyFormattedSql);
+            clearAllBtn.addEventListener('click', clearAll);
+
+            function formatSql() {
+                const input = sqlInput.value;
+                try {
+                    const formattedSql = window.sqlFormatter.format(input, {
+                        language: 'sql',
+                        indent: '  '
+                    });
+                    sqlOutput.value = formattedSql;
+                } catch (error) {
+                    sqlOutput.value = 'Error formatting SQL: ' + error.message;
+                    console.error('SQL formatting error:', error);
+                }
+            }
+
+            function copyFormattedSql() {
+                sqlOutput.select();
+                sqlOutput.setSelectionRange(0, 99999);
+                document.execCommand('copy');
+                alert('Formatted SQL copied to clipboard!');
+            }
+
+            function clearAll() {
+                sqlInput.value = '';
+                sqlOutput.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
